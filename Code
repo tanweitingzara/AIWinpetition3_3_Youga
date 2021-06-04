@@ -1,0 +1,142 @@
+#big idea 
+#1. create a webcam inside of front-end React app
+#2. Load posent from tensorflow.js and make detections from stream 
+#3. Draw keypoints and skeleton on Javascript canvas using TF units 
+
+#supposed to be on another coding software:  
+#install dependencies we need 
+import React from 'react'
+import logo from './logo.svg';
+import '.App.css';
+
+function App(){
+    return (
+        <div className='App'>
+          <header className='App-header'
+            <img src={logo} className='App-logo' alt='logo'/>
+            <p>
+            <a
+              className="App-link"
+              href="https://reactjs.org"
+              target="_blank"
+              rel="noopener noreferrer"
+
+              >
+
+              Learn React
+            </a>
+            </header 
+           </div>
+    );
+}
+
+export default App;
+
+npm install @tensorflow/tfjs @tensorflow-models/posenet react-webcam #to instal the dependencies 
+
+#import the dependencies needed 
+import React {useRef} from 'react';
+import '.App.css';
+import * as tf from "@tensorflow/tfjs"
+import * as posenet from "@tensorflow-models/posenet";
+import Webcam from "react-webcam";
+
+#set up the webcam and canvas 
+#step 1: to check if the react app works 
+function App(){
+    return (
+        <div className='App'>
+          <header className='App-header'>"Hello World"</header>
+           </header 
+           </div>
+    );
+}
+
+export default App;
+npm run start #to start up the application
+#a page showing "Hello World is supposed to show"
+
+# replace the "Hello World" with the webcam component and the canvas 
+#webcam is a feed of the actual computer webcam, canvas allows us to draw over the webcam
+
+#adding the canvas
+function App(){
+    #setting up the references 
+    const webcamRef = useRef(null); 
+    const canvasref = useRef(null);
+
+    #in the import lines: drawing utilities from tensorflow
+    import {drawKeypoints,drawSkeleton} from "./utilities";
+
+    #load posenet
+   const runPosenet = async ()=>{
+    const net = await posenet.load({
+        input Resolution: { width: 640, height: 480 },
+        scale: 0.5,
+    });
+    #set interval to run the detection every x seconds 
+    setInterval(()=>{
+        detect(net);
+    }, 100); #interval of 100 milliseconds
+};
+
+const detect = async (net) =>{
+    #ensure webcam is ready
+    if(typeof webcam.current !== "undefined" && webcamRef.current !== null && webcamRef.current.video.readyState===4 ){
+        #get video properties
+        const video = webcamRef.current.video;
+        const videoWidth = webcamRef.current.video.videoWidth;
+        const videoHeight = webcamRef.current.video.videoHeight;
+
+        #set video width and height
+        webcamRef.current.video.width = videoWidth;
+        webcamRef.current.video.height = videoHeight;
+
+        #make detections
+        const pose = await net.estimateSinglePose(video); #pass the video through posenet, use the estimate single pose method to make detection
+        console.log(pose); #this is stored within a variable called pose 
+
+        #in the app, you are supposed to see yourself (like in Zoom, when you on your camera)
+
+    return (
+        <div className='App'>
+          <header className='App-header'>
+           <Webcam
+            ref={webcamref}
+             style={{
+                 position:"absolute",
+                 marginLeft:"auto",
+                 marginRight:"auto",
+                 left:0,
+                 right:0,
+                 textAlign:"center",
+                 zindex:9 #where the overlay is 
+                 width:640,
+                 height:480
+             }}
+            />
+
+            <canvas 
+             ref={canvasRef}
+             style={{  
+                 position:"absolute",
+                 marginLeft:"auto",
+                 marginRight:"auto",
+                 left:0,
+                 right:0,
+                 textAlign:"center",
+                 zindex:9
+                 width:640,
+                 height:480}}/>
+          </header 
+           </div>
+    );
+}
+
+export default App;
+
+drawCanvas(pose, video, videoWidth, videoHeight, canvasRef);
+
+};
+
+}
